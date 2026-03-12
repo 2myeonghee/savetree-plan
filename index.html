@@ -703,6 +703,370 @@ p.body strong{color:var(--ink);}
 </p>
 </section>
 
+
+<!-- ══════════════ Section 09 ══════════════ -->
+<section>
+<div class="sec-hdr">
+  <div class="sec-num">Section 09</div>
+  <div class="sec-name">트리맵 화면 상세 설계</div>
+</div>
+
+<p class="body">
+  트리맵은 <strong>단지 도면 위에 수목 마커를 오버레이</strong>하는 인터랙티브 지도 화면이다.
+  좌측 필터 패널 + 우측 지도 영역의 2열 구조이며, 마커 클릭 시 플로팅 팝업이 나타난다.
+</p>
+
+<!-- 레이아웃 와이어프레임 -->
+<div style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:22px 20px;margin-bottom:20px;">
+  <div style="font-size:10px;font-weight:800;color:var(--ink3);letter-spacing:.6px;text-transform:uppercase;margin-bottom:14px;">레이아웃 구조도</div>
+  <div style="display:flex;gap:10px;height:280px;">
+    <!-- 사이드바 -->
+    <div style="width:180px;flex-shrink:0;border:1.5px dashed var(--line);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:7px;">
+      <div style="font-size:9.5px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:.5px;">필터 패널 (240px)</div>
+      <div style="background:var(--light2);border:1px dashed var(--line);border-radius:5px;padding:7px 8px;">
+        <div style="font-size:9px;font-weight:700;color:var(--ink3);">🔍 수목 검색</div>
+      </div>
+      <div style="background:var(--light2);border:1px dashed var(--line);border-radius:5px;padding:7px 8px;flex:1;">
+        <div style="font-size:9px;font-weight:700;color:var(--ink3);margin-bottom:5px;">건강 등급 필터</div>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div style="font-size:8.5px;color:var(--ink3);">● A — 우수 (134)</div>
+          <div style="font-size:8.5px;color:var(--ink3);">● B — 양호 (68)</div>
+          <div style="font-size:8.5px;color:var(--ink3);">● C — 주의 (30)</div>
+          <div style="font-size:8.5px;color:var(--ink3);">● D — 위험 (15)</div>
+        </div>
+      </div>
+      <div style="background:var(--light2);border:1px dashed var(--line);border-radius:5px;padding:7px 8px;">
+        <div style="font-size:9px;font-weight:700;color:var(--ink3);">수종 분류</div>
+      </div>
+    </div>
+    <!-- 지도 영역 -->
+    <div style="flex:1;border:1.5px dashed var(--line);border-radius:8px;padding:10px;position:relative;">
+      <div style="font-size:9.5px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">지도 영역 (flex:1)</div>
+      <!-- 도면 배경 -->
+      <div style="background:var(--bg);border-radius:6px;height:180px;position:relative;overflow:hidden;">
+        <!-- 건물 블록들 -->
+        <div style="position:absolute;left:18%;top:10%;width:14%;height:20%;background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:7.5px;color:var(--ink4);">101동</div>
+        <div style="position:absolute;left:35%;top:10%;width:14%;height:20%;background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:7.5px;color:var(--ink4);">102동</div>
+        <div style="position:absolute;left:52%;top:10%;width:14%;height:20%;background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:7.5px;color:var(--ink4);">103동</div>
+        <!-- 공원 -->
+        <div style="position:absolute;right:4%;top:6%;width:24%;height:85%;background:rgba(34,163,88,.06);border:1px solid rgba(34,163,88,.15);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:7.5px;color:var(--ink3);">조경공원</div>
+        <!-- 마커들 -->
+        <div style="position:absolute;left:72%;top:45%;width:14px;height:14px;border-radius:50%;background:#ef4444;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.2);"></div>
+        <div style="position:absolute;left:28%;top:35%;width:12px;height:12px;border-radius:50%;background:#22a358;border:2px solid white;"></div>
+        <div style="position:absolute;left:44%;top:55%;width:12px;height:12px;border-radius:50%;background:#22a358;border:2px solid white;"></div>
+        <div style="position:absolute;left:58%;top:40%;width:12px;height:12px;border-radius:50%;background:#d97706;border:2px solid white;"></div>
+        <div style="position:absolute;left:38%;top:65%;width:12px;height:12px;border-radius:50%;background:#84cc16;border:2px solid white;"></div>
+        <!-- 팝업 -->
+        <div style="position:absolute;left:75%;top:28%;background:white;border:1px solid var(--line);border-radius:6px;padding:7px 9px;box-shadow:0 4px 12px rgba(0,0,0,.1);min-width:100px;">
+          <div style="font-size:8px;font-weight:800;color:var(--ink);">왕벚나무 #T-047</div>
+          <div style="font-size:7.5px;color:#ef4444;font-weight:600;margin-top:2px;">D — 위험</div>
+          <div style="display:flex;gap:4px;margin-top:6px;">
+            <div style="background:var(--primary);color:white;border-radius:3px;padding:2px 5px;font-size:7px;font-weight:700;">상세</div>
+            <div style="background:var(--light);color:var(--deep);border-radius:3px;padding:2px 5px;font-size:7px;font-weight:700;">3D</div>
+          </div>
+        </div>
+        <!-- 범례 -->
+        <div style="position:absolute;bottom:6px;left:6px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:4px;padding:4px 7px;font-size:7.5px;color:var(--ink3);">● A &nbsp;● B &nbsp;● C &nbsp;● D</div>
+        <!-- 수목 수 -->
+        <div style="position:absolute;top:6px;right:6px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:4px;padding:3px 8px;font-size:7.5px;color:var(--ink3);">247그루</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 마커 상태 정의 -->
+<p class="body"><strong>마커 상태 정의</strong> — 건강 등급과 인터랙션 상태에 따라 5가지 시각 상태를 구분한다.</p>
+<div class="tbl-wrap">
+<table class="tbl">
+  <thead>
+    <tr><th>상태</th><th>색상</th><th>크기</th><th>효과</th><th>트리거 조건</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Normal — A</td><td>#22a358 (딥 그린)</td><td>18×18px</td><td>흰 테두리 2px</td><td>건강 등급 A, 평상시</td></tr>
+    <tr><td>Normal — B</td><td>#84cc16 (연두)</td><td>18×18px</td><td>흰 테두리 2px</td><td>건강 등급 B, 평상시</td></tr>
+    <tr><td>Normal — C</td><td>#d97706 (주황)</td><td>18×18px</td><td>흰 테두리 2px</td><td>건강 등급 C, 평상시</td></tr>
+    <tr><td>Alert — D</td><td>#ef4444 (빨강)</td><td>20×20px</td><td>pulse 애니메이션 (2s)</td><td>건강 등급 D, 긴급 알림</td></tr>
+    <tr><td>Hover</td><td>동일</td><td>1.35× 확대</td><td>scale transform + 그림자 강화</td><td>마우스 오버 시</td></tr>
+    <tr><td>Selected</td><td>동일</td><td>1.45× 확대</td><td>scale + 팝업 표시</td><td>클릭 시</td></tr>
+    <tr><td>Dragging</td><td>동일 + 50% 투명도</td><td>1.2× 확대</td><td>transition:none / cursor:grabbing</td><td>mousedown + mousemove 시</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- 드래그 앤 드롭 플로우 -->
+<p class="body"><strong>드래그 앤 드롭 플로우</strong> — GPS 좌표와 실제 도면 위치의 미세 오차를 수동 보정하는 기능이다.</p>
+<div style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;">
+  <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;">
+    <div style="background:var(--light2);border:1px solid var(--line);border-radius:7px;padding:10px 14px;text-align:center;min-width:110px;">
+      <div style="font-size:9px;font-weight:800;color:var(--ink3);margin-bottom:4px;">① 마커 클릭 유지</div>
+      <div style="font-size:11.5px;font-weight:700;color:var(--ink);">mousedown</div>
+      <div style="font-size:10px;color:var(--ink3);margin-top:2px;">cursor: grab</div>
+    </div>
+    <div style="font-size:18px;color:var(--ink4);padding:0 10px;">→</div>
+    <div style="background:var(--light2);border:1px solid var(--line);border-radius:7px;padding:10px 14px;text-align:center;min-width:110px;">
+      <div style="font-size:9px;font-weight:800;color:var(--ink3);margin-bottom:4px;">② 드래그 이동</div>
+      <div style="font-size:11.5px;font-weight:700;color:var(--ink);">mousemove</div>
+      <div style="font-size:10px;color:var(--ink3);margin-top:2px;">마커 투명도 50%</div>
+    </div>
+    <div style="font-size:18px;color:var(--ink4);padding:0 10px;">→</div>
+    <div style="background:var(--light2);border:1px solid var(--line);border-radius:7px;padding:10px 14px;text-align:center;min-width:110px;">
+      <div style="font-size:9px;font-weight:800;color:var(--ink3);margin-bottom:4px;">③ 드롭</div>
+      <div style="font-size:11.5px;font-weight:700;color:var(--ink);">mouseup</div>
+      <div style="font-size:10px;color:var(--ink3);margin-top:2px;">새 좌표 계산</div>
+    </div>
+    <div style="font-size:18px;color:var(--ink4);padding:0 10px;">→</div>
+    <div style="background:var(--light2);border:1px solid var(--line);border-radius:7px;padding:10px 14px;text-align:center;min-width:110px;">
+      <div style="font-size:9px;font-weight:800;color:var(--ink3);margin-bottom:4px;">④ 로컬 저장</div>
+      <div style="font-size:11.5px;font-weight:700;color:var(--ink);">PATCH API</div>
+      <div style="font-size:10px;color:var(--ink3);margin-top:2px;">lat_override 저장</div>
+    </div>
+    <div style="font-size:18px;color:var(--ink4);padding:0 10px;">→</div>
+    <div style="background:var(--light);border:1px solid rgba(34,163,88,.2);border-radius:7px;padding:10px 14px;text-align:center;min-width:110px;">
+      <div style="font-size:9px;font-weight:800;color:var(--green);margin-bottom:4px;">⑤ 완료</div>
+      <div style="font-size:11.5px;font-weight:700;color:var(--primary);">토스트 알림</div>
+      <div style="font-size:10px;color:var(--ink3);margin-top:2px;">"위치 저장됨"</div>
+    </div>
+  </div>
+  <div style="margin-top:12px;font-size:12px;color:var(--ink3);">
+    <strong style="color:var(--ink2);">원위치 초기화:</strong> 마커 팝업 → "초기화" 버튼 → Greehill 원본 좌표로 복원 / lat_override 삭제
+  </div>
+</div>
+
+<!-- 필터 패널 스펙 -->
+<p class="body"><strong>필터 패널 컴포넌트 스펙</strong></p>
+<div class="tbl-wrap">
+<table class="tbl">
+  <thead>
+    <tr><th>컴포넌트</th><th>타입</th><th>동작</th><th>기본값</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>수목 검색</td><td>텍스트 인풋</td><td>수종명 또는 ID 실시간 필터 (디바운스 300ms)</td><td>빈 값</td></tr>
+    <tr><td>건강 등급 필터</td><td>멀티 체크박스</td><td>A/B/C/D 복수 선택. 선택 해제 시 해당 등급 마커 숨김</td><td>전체 선택</td></tr>
+    <tr><td>센서 알림</td><td>토글 스위치</td><td>ON: 임계값 초과 수목만 표시</td><td>OFF</td></tr>
+    <tr><td>포인트 클라우드</td><td>토글 스위치</td><td>ON: PC 보유 수목에 파란 뱃지 오버레이</td><td>OFF</td></tr>
+    <tr><td>수종 분류</td><td>싱글 체크박스 목록</td><td>특정 수종만 표시. "전체" 선택 시 초기화</td><td>전체</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<!-- ══════════════ Section 10 ══════════════ -->
+<section>
+<div class="sec-hdr">
+  <div class="sec-num">Section 10</div>
+  <div class="sec-name">수목 상세 화면 상세 설계</div>
+</div>
+
+<p class="body">
+  수목 상세 화면은 <strong>좌측 수목 목록 패널 + 우측 상세 콘텐츠</strong>의 2열 구조다.
+  Greehill STI 정적 속성, 실시간 센서 카드, 히스토리 차트, 진단 이력(EMR) 타임라인 4개 영역으로 구성된다.
+</p>
+
+<!-- 레이아웃 와이어프레임 -->
+<div style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:22px 20px;margin-bottom:20px;">
+  <div style="font-size:10px;font-weight:800;color:var(--ink3);letter-spacing:.6px;text-transform:uppercase;margin-bottom:14px;">레이아웃 구조도</div>
+  <div style="display:flex;gap:10px;min-height:340px;">
+    <!-- 목록 패널 -->
+    <div style="width:190px;flex-shrink:0;border:1.5px dashed var(--line);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:6px;">
+      <div style="font-size:9.5px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">목록 패널 (270px)</div>
+      <div style="background:var(--light2);border:1px dashed var(--line);border-radius:4px;padding:5px 7px;font-size:8.5px;color:var(--ink3);">🔍 수종 또는 번호 검색</div>
+      <!-- 목록 아이템들 -->
+      <div style="background:var(--light);border-left:3px solid var(--green);border-radius:4px;padding:6px 7px;">
+        <div style="display:flex;align-items:center;gap:5px;">
+          <div style="background:#ef4444;color:white;border-radius:4px;padding:2px 5px;font-size:8px;font-weight:800;">D</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:var(--ink);">왕벚나무</div>
+            <div style="font-size:8px;color:var(--ink3);">#T-047 · 8.2m</div>
+          </div>
+          <div style="margin-left:auto;font-size:10px;color:#ef4444;">⚠</div>
+        </div>
+      </div>
+      <div style="border:1px solid var(--line2);border-radius:4px;padding:6px 7px;">
+        <div style="display:flex;align-items:center;gap:5px;">
+          <div style="background:#22a358;color:white;border-radius:4px;padding:2px 5px;font-size:8px;font-weight:800;">A</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:var(--ink);">소나무</div>
+            <div style="font-size:8px;color:var(--ink3);">#T-089 · 6.8m</div>
+          </div>
+        </div>
+      </div>
+      <div style="border:1px solid var(--line2);border-radius:4px;padding:6px 7px;">
+        <div style="display:flex;align-items:center;gap:5px;">
+          <div style="background:#ef4444;color:white;border-radius:4px;padding:2px 5px;font-size:8px;font-weight:800;">D</div>
+          <div>
+            <div style="font-size:9px;font-weight:700;color:var(--ink);">느티나무</div>
+            <div style="font-size:8px;color:var(--ink3);">#T-112 · 11.4m</div>
+          </div>
+          <div style="margin-left:auto;font-size:10px;color:#ef4444;">⚠</div>
+        </div>
+      </div>
+      <div style="border:1px solid var(--line2);border-radius:4px;padding:6px 7px;font-size:8.5px;color:var(--ink3);">…더보기 (244)</div>
+    </div>
+    <!-- 상세 콘텐츠 -->
+    <div style="flex:1;border:1.5px dashed var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:9px;overflow:hidden;">
+      <div style="font-size:9.5px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:.5px;">상세 패널 (flex:1)</div>
+      <!-- 헤더 -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-size:14px;font-weight:900;color:var(--ink);">왕벚나무 <span style="font-weight:500;color:var(--ink3);">#T-047</span></div>
+          <div style="font-size:9.5px;color:var(--ink3);">헬리오시티 · 중앙 조경 공원 서측</div>
+        </div>
+        <div style="display:flex;gap:5px;">
+          <div style="background:var(--light2);border:1px solid var(--line);border-radius:5px;padding:5px 9px;font-size:9px;font-weight:700;color:var(--ink2);">포인트 클라우드</div>
+          <div style="background:var(--primary);color:white;border-radius:5px;padding:5px 9px;font-size:9px;font-weight:700;">점검 등록</div>
+        </div>
+      </div>
+      <!-- STI 속성 카드 4개 -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+        <div style="background:var(--light2);border:1px solid var(--line);border-radius:5px;padding:7px;text-align:center;">
+          <div style="font-size:12px;font-weight:900;color:var(--primary);">8.2m</div><div style="font-size:8px;color:var(--ink3);">수고</div>
+        </div>
+        <div style="background:var(--light2);border:1px solid var(--line);border-radius:5px;padding:7px;text-align:center;">
+          <div style="font-size:12px;font-weight:900;color:var(--primary);">22cm</div><div style="font-size:8px;color:var(--ink3);">흉고직경</div>
+        </div>
+        <div style="background:var(--light2);border:1px solid var(--line);border-radius:5px;padding:7px;text-align:center;">
+          <div style="font-size:12px;font-weight:900;color:var(--primary);">14.6m²</div><div style="font-size:8px;color:var(--ink3);">수관 면적</div>
+        </div>
+        <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:5px;padding:7px;text-align:center;">
+          <div style="font-size:11px;font-weight:900;color:#991b1b;">D 위험</div><div style="font-size:8px;color:#991b1b;">건강 등급</div>
+        </div>
+      </div>
+      <!-- 센서 카드 2×2 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <div style="background:#fff5f5;border:1px solid #fca5a5;border-radius:5px;padding:8px 10px;">
+          <div style="font-size:8px;font-weight:800;color:var(--ink3);margin-bottom:3px;">토양 수분 · 임계</div>
+          <div style="font-size:16px;font-weight:900;color:#ef4444;">12<span style="font-size:9px;font-weight:500;color:var(--ink3);">%</span></div>
+          <div style="height:3px;background:var(--line);border-radius:2px;margin-top:5px;overflow:hidden;"><div style="width:12%;height:100%;background:#ef4444;border-radius:2px;"></div></div>
+        </div>
+        <div style="background:var(--light2);border:1px solid var(--line);border-radius:5px;padding:8px 10px;">
+          <div style="font-size:8px;font-weight:800;color:var(--ink3);margin-bottom:3px;">토양 온도 · 정상</div>
+          <div style="font-size:16px;font-weight:900;color:var(--primary);">14.2<span style="font-size:9px;font-weight:500;color:var(--ink3);">°C</span></div>
+          <div style="height:3px;background:var(--line);border-radius:2px;margin-top:5px;overflow:hidden;"><div style="width:46%;height:100%;background:var(--green);border-radius:2px;"></div></div>
+        </div>
+      </div>
+      <!-- 차트 영역 -->
+      <div style="background:var(--light2);border:1px dashed var(--line);border-radius:5px;padding:8px 10px;">
+        <div style="font-size:8.5px;font-weight:700;color:var(--ink2);">토양 수분 추이 차트 영역 (Chart.js)</div>
+      </div>
+      <!-- EMR -->
+      <div style="background:var(--light2);border:1px dashed var(--line);border-radius:5px;padding:8px 10px;">
+        <div style="font-size:8.5px;font-weight:700;color:var(--ink2);">진단 이력(EMR) 타임라인 영역</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 센서 카드 컴포넌트 스펙 -->
+<p class="body"><strong>센서 카드 컴포넌트 스펙</strong> — 4종 센서를 각각 카드로 표시하며, 임계값 초과 시 시각·색상 상태가 변경된다.</p>
+<div class="tbl-wrap">
+<table class="tbl">
+  <thead>
+    <tr><th>센서 항목</th><th>정상 범위</th><th>경고 임계</th><th>위험 임계</th><th>단위</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>토양 수분 (Moisture)</td><td>25 ~ 70%</td><td>20 ~ 25% / 70~80%</td><td>&lt;20% 또는 &gt;80%</td><td>%</td></tr>
+    <tr><td>토양 온도 (Temperature)</td><td>5 ~ 30°C</td><td>0~5°C / 30~35°C</td><td>&lt;0°C 또는 &gt;35°C</td><td>°C</td></tr>
+    <tr><td>전기전도도 (EC)</td><td>0.5 ~ 2.0 dS/m</td><td>2.0 ~ 3.0</td><td>&gt;3.0</td><td>dS/m</td></tr>
+    <tr><td>생체전기 (Bio-electric)</td><td>0.5 ~ 1.5 mV</td><td>0.2~0.5 / 1.5~2.0</td><td>&lt;0.2 또는 &gt;2.0</td><td>mV</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="card-row">
+  <div class="card">
+    <div class="ctag">카드 상태 — 정상</div>
+    <h4>Normal State</h4>
+    <ul>
+      <li>배경: <code style="font-size:11px;background:var(--light2);padding:1px 5px;border-radius:3px;">var(--light2)</code>, 테두리 기본</li>
+      <li>수치 텍스트: <code style="font-size:11px;background:var(--light2);padding:1px 5px;border-radius:3px;">var(--primary)</code> 딥 그린</li>
+      <li>게이지 바: 그린 채움</li>
+      <li>알림 태그: 없음</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="ctag">카드 상태 — 경고 / 위험</div>
+    <h4>Alert / Critical State</h4>
+    <ul>
+      <li>배경: 경고 <code style="font-size:11px;background:#fef3c7;padding:1px 5px;border-radius:3px;">#fffbf0</code> / 위험 <code style="font-size:11px;background:#fee2e2;padding:1px 5px;border-radius:3px;">#fff5f5</code></li>
+      <li>수치 텍스트: 경고 <code style="font-size:11px;background:#fef3c7;padding:1px 5px;border-radius:3px;">#d97706</code> / 위험 <code style="font-size:11px;background:#fee2e2;padding:1px 5px;border-radius:3px;">#ef4444</code></li>
+      <li>게이지 바: 경고 주황 / 위험 빨강</li>
+      <li>우측 상단: "경고" / "임계" 텍스트 태그</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 차트 스펙 -->
+<p class="body"><strong>히스토리 차트 스펙</strong> — Chart.js Line Chart 기반. 7일 / 30일 탭 전환.</p>
+<div class="tbl-wrap">
+<table class="tbl">
+  <thead>
+    <tr><th>항목</th><th>스펙</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>라이브러리</td><td>Chart.js v4 / React-Chartjs-2</td></tr>
+    <tr><td>차트 타입</td><td>Line (곡선 보간, tension: 0.4)</td></tr>
+    <tr><td>X축</td><td>날짜 (MM/DD), 7일 = 7포인트, 30일 = 30포인트</td></tr>
+    <tr><td>Y축</td><td>센서 단위 자동 적용 (% / °C / dS/m / mV)</td></tr>
+    <tr><td>정상 구간 표시</td><td>min~max 사이 연한 그린 fill 영역 (rgba)</td></tr>
+    <tr><td>임계값 선</td><td>빨간 점선 (borderDash: [4,4], 레이블 "임계")</td></tr>
+    <tr><td>데이터 포인트 색상</td><td>정상 = 그린 / 경고 = 주황 / 위험 = 빨강 (포인트별 색상 배열)</td></tr>
+    <tr><td>툴팁</td><td>hover 시 날짜 + 수치 + 상태 레이블 표시</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- EMR 타임라인 스펙 -->
+<p class="body"><strong>진단 이력(EMR) 타임라인 스펙</strong> — 세이브트리 나무의사 진단 기록을 시간 역순으로 표시한다.</p>
+<div class="tbl-wrap">
+<table class="tbl">
+  <thead>
+    <tr><th>필드</th><th>타입</th><th>표시 방식</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>진단 날짜</td><td>Date</td><td>타임라인 왼쪽 시간축. 긴급 진단은 빨간 점, 정기 진단은 그린 점</td></tr>
+    <tr><td>진단 제목</td><td>String</td><td>볼드 13px, 주요 소견 요약</td></tr>
+    <tr><td>진단 내용</td><td>Text</td><td>12px 그레이 텍스트, 최대 3줄 표시 (더보기 토글)</td></tr>
+    <tr><td>담당 나무의사</td><td>String</td><td>오른쪽 정렬 회색 텍스트</td></tr>
+    <tr><td>첨부 사진</td><td>Image[]</td><td>썸네일 40×40px 행 (클릭 시 라이트박스)</td></tr>
+    <tr><td>PDF 리포트</td><td>URL</td><td>"리포트 다운로드" 링크 버튼</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- Greehill 연동 플로우 -->
+<p class="body"><strong>포인트 클라우드 연동 UX 플로우</strong></p>
+<div style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:20px;">
+  <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;">
+    <div style="background:var(--light2);border:1px solid var(--line);border-radius:7px;padding:10px 14px;text-align:center;min-width:120px;">
+      <div style="font-size:9px;font-weight:800;color:var(--ink3);margin-bottom:4px;">① 버튼 클릭</div>
+      <div style="font-size:11.5px;font-weight:700;color:var(--ink);">"포인트 클라우드" 버튼</div>
+    </div>
+    <div style="font-size:18px;color:var(--ink4);padding:0 10px;">→</div>
+    <div style="background:var(--light2);border:1px solid var(--line);border-radius:7px;padding:10px 14px;text-align:center;min-width:120px;">
+      <div style="font-size:9px;font-weight:800;color:var(--ink3);margin-bottom:4px;">② ID 변환</div>
+      <div style="font-size:11.5px;font-weight:700;color:var(--ink);">tree_id → Greehill ID</div>
+      <div style="font-size:10px;color:var(--ink3);margin-top:2px;">greehill_id 필드 참조</div>
+    </div>
+    <div style="font-size:18px;color:var(--ink4);padding:0 10px;">→</div>
+    <div style="background:var(--light2);border:1px solid var(--line);border-radius:7px;padding:10px 14px;text-align:center;min-width:130px;">
+      <div style="font-size:9px;font-weight:800;color:var(--ink3);margin-bottom:4px;">③ URL 생성</div>
+      <div style="font-size:10.5px;font-weight:700;color:var(--ink);">app.greehill.com /trees/:id</div>
+    </div>
+    <div style="font-size:18px;color:var(--ink4);padding:0 10px;">→</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="background:var(--light);border:1px solid rgba(34,163,88,.2);border-radius:7px;padding:7px 12px;text-align:center;min-width:110px;">
+        <div style="font-size:9px;font-weight:800;color:var(--green);margin-bottom:3px;">iframe 허용 시</div>
+        <div style="font-size:10.5px;font-weight:700;color:var(--primary);">화면 내 임베드</div>
+      </div>
+      <div style="background:var(--light2);border:1px solid var(--line);border-radius:7px;padding:7px 12px;text-align:center;min-width:110px;">
+        <div style="font-size:9px;font-weight:800;color:var(--ink3);margin-bottom:3px;">iframe 불가 시</div>
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink);">새 탭으로 열기</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
 </div><!-- /body-wrap -->
 </div><!-- /page -->
 </body>
