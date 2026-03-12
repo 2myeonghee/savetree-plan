@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>스마트 수목 관리 플랫폼 기획서 v1.0 — 세이브트리 × 두꺼비세상</title>
+  <link rel="stylesheet" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+  :root{
+    --font:'Pretendard',-apple-system,sans-serif;
+    --p:#0c2218;--g:#16a34a;--g-l:#dcfce7;--g-ll:#f0fdf4;
+    --ink:#111827;--ink2:#374151;--ink3:#6b7280;--ink4:#9ca3af;
+    --line:#e5e7eb;--bg:#f9fafb;--white:#fff;
+    --warn:#f59e0b;--err:#ef4444;
+  }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .page{max-width:860px;margin:0 auto;padding:0 40px 60px;}
+
+  /* ── 표지 ── */
+  .cover{
+    background:linear-gradient(160deg,var(--p) 0%,#0d3320 60%,#1a4a2e 100%);
+    min-height:260px;display:flex;flex-direction:column;
+    justify-content:flex-end;padding:40px;margin-bottom:40px;
+    position:relative;overflow:hidden;
+  }
+  .cover::before{
+    content:'';position:absolute;inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2322c55e' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .cover-tag{
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);
+    color:#4ade80;font-size:11px;font-weight:600;letter-spacing:.6px;
+    padding:4px 10px;border-radius:20px;margin-bottom:14px;width:fit-content;
+    text-transform:uppercase;
+  }
+  .cover h1{font-size:26px;font-weight:800;color:#fff;line-height:1.25;margin-bottom:8px;}
+  .cover h1 span{color:#4ade80;}
+  .cover .sub{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:20px;}
+  .cover-meta{display:flex;gap:20px;flex-wrap:wrap;}
+  .cover-meta .cm{font-size:12px;color:rgba(255,255,255,.4);}
+  .cover-meta .cm span{color:rgba(255,255,255,.8);font-weight:600;}
+  .cover-kpi{display:flex;gap:10px;margin-top:18px;}
+  .ck{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 16px;}
+  .ck .cv{font-size:20px;font-weight:800;color:#4ade80;line-height:1;margin-bottom:3px;}
+  .ck .cc{font-size:10.5px;color:rgba(255,255,255,.5);}
+
+  /* ── 섹션 헤더 ── */
+  .sec-hdr{display:flex;align-items:center;margin:36px 0 18px;gap:0;}
+  .sec-num{
+    background:var(--p);color:#4ade80;font-size:11px;font-weight:800;
+    padding:5px 12px;letter-spacing:.5px;border-radius:6px 0 0 6px;
+  }
+  .sec-name{
+    background:var(--g-l);color:var(--p);font-size:12px;font-weight:700;
+    padding:5px 14px;border-radius:0 6px 6px 0;letter-spacing:.2px;
+  }
+
+  /* ── 텍스트 블록 ── */
+  .lead{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-bottom:20px;}
+  .lead strong{color:var(--ink);font-weight:700;}
+  p.body{font-size:13.5px;color:var(--ink2);line-height:1.8;margin-bottom:14px;}
+  p.body strong{color:var(--ink);}
+
+  /* ── 카드 그리드 ── */
+  .card-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+  .card-row.col3{grid-template-columns:1fr 1fr 1fr;}
+  .card{
+    background:var(--white);border:1px solid var(--line);border-radius:10px;
+    padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.04);
+  }
+  .card .ctag{
+    font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+    color:var(--g);margin-bottom:6px;
+  }
+  .card h4{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  .card p{font-size:12.5px;color:var(--ink3);line-height:1.65;}
+  .card ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-top:6px;}
+  .card ul li{font-size:12.5px;color:var(--ink2);padding-left:14px;position:relative;line-height:1.6;}
+  .card ul li::before{content:'·';position:absolute;left:4px;color:var(--g);font-weight:700;}
+
+  /* ── 인사이트 박스 ── */
+  .ibox{
+    background:var(--g-ll);border:1px solid var(--g-l);
+    border-left:4px solid var(--g);border-radius:0 10px 10px 0;
+    padding:14px 18px;margin-bottom:16px;
+    font-size:13px;color:var(--ink2);line-height:1.7;
+  }
+  .ibox strong{color:var(--p);font-weight:700;}
+  .ibox .em{color:var(--g);font-weight:700;}
+
+  /* ── 테이블 ── */
+  .tbl{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px;}
+  .tbl thead th{
+    background:var(--p);color:#fff;font-weight:600;padding:10px 14px;
+    text-align:left;font-size:12px;
+  }
+  .tbl thead th:first-child{border-radius:6px 0 0 0;}
+  .tbl thead th:last-child{border-radius:0 6px 0 0;}
+  .tbl tbody td{padding:10px 14px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top;line-height:1.6;}
+  .tbl tbody tr:last-child td{border-bottom:none;}
+  .tbl tbody td:first-child{color:var(--ink);font-weight:600;white-space:nowrap;}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;}
+  .badge.g{background:var(--g-l);color:#166534;}
+  .badge.b{background:#dbeafe;color:#1e40af;}
+  .badge.o{background:#fef3c7;color:#92400e;}
+  .badge.r{background:#fee2e2;color:#991b1b;}
+
+  /* ── 아키텍처 다이어그램 ── */
+  .arch{
+    background:var(--white);border:1px solid var(--line);border-radius:12px;
+    padding:24px;margin-bottom:20px;overflow-x:auto;
+  }
+  .arch-row{display:flex;gap:0;align-items:center;justify-content:center;flex-wrap:nowrap;margin-bottom:8px;}
+  .arch-box{
+    background:var(--g-ll);border:1.5px solid var(--g-l);border-radius:8px;
+    padding:10px 14px;text-align:center;flex-shrink:0;min-width:110px;
+  }
+  .arch-box .abt{font-size:10px;font-weight:700;color:var(--g);margin-bottom:3px;letter-spacing:.3px;text-transform:uppercase;}
+  .arch-box .abn{font-size:12px;font-weight:700;color:var(--ink);}
+  .arch-box.dark{background:var(--p);border-color:var(--p);}
+  .arch-box.dark .abt{color:#4ade80;}
+  .arch-box.dark .abn{color:#fff;}
+  .arch-arrow{font-size:16px;color:var(--ink4);padding:0 8px;flex-shrink:0;}
+  .arch-label{font-size:10.5px;color:var(--ink4);text-align:center;margin-top:4px;}
+
+  /* ── 화면 카드 (IA) ── */
+  .screen-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+  .sc{
+    background:var(--white);border:1px solid var(--line);border-radius:10px;
+    overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);
+  }
+  .sc-hd{
+    background:var(--p);padding:10px 14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .sc-hd .sn{
+    width:22px;height:22px;background:rgba(74,222,128,.2);
+    border:1px solid rgba(74,222,128,.3);border-radius:6px;
+    font-size:10px;font-weight:800;color:#4ade80;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .sc-hd .st{font-size:13px;font-weight:700;color:#fff;}
+  .sc-body{padding:12px 14px;}
+  .sc-body p{font-size:12px;color:var(--ink3);line-height:1.65;margin-bottom:8px;}
+  .sc-body .feat{font-size:11.5px;color:var(--ink2);padding-left:12px;position:relative;margin-bottom:4px;}
+  .sc-body .feat::before{content:'✓';position:absolute;left:0;color:var(--g);font-size:10px;font-weight:700;}
+
+  /* ── 타임라인 (로드맵) ── */
+  .roadmap{display:flex;flex-direction:column;gap:0;margin-bottom:20px;}
+  .rm-item{display:flex;gap:14px;}
+  .rm-l{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px;}
+  .rm-dot{
+    width:28px;height:28px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:800;flex-shrink:0;
+  }
+  .rm-dot.g{background:var(--g-l);color:#166534;}
+  .rm-dot.y{background:#fef3c7;color:#92400e;}
+  .rm-dot.b{background:#dbeafe;color:#1e40af;}
+  .rm-line{width:1px;flex:1;background:var(--line);margin:3px 0;}
+  .rm-c{padding:4px 0 20px;flex:1;}
+  .rm-c h4{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+  .rm-c .tag{
+    display:inline-block;font-size:10.5px;font-weight:600;
+    padding:2px 8px;border-radius:20px;margin-bottom:6px;
+  }
+  .rm-c .tag.g{background:var(--g-l);color:#166534;}
+  .rm-c .tag.y{background:#fef3c7;color:#92400e;}
+  .rm-c .tag.b{background:#dbeafe;color:#1e40af;}
+  .rm-c ul{list-style:none;display:flex;flex-direction:column;gap:3px;}
+  .rm-c ul li{font-size:12.5px;color:var(--ink2);padding-left:12px;position:relative;line-height:1.6;}
+  .rm-c ul li::before{content:'·';position:absolute;left:3px;color:var(--ink4);}
+
+  /* ── 인쇄 ── */
+  @media print{
+    body{background:#fff;}
+    .cover{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .sec-hdr,.arch,.tbl thead{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    section{page-break-before:always;}
+  }
+  </style>
+</head>
+<body>
+<div class="page">
+
+<!-- 표지 -->
+<div class="cover">
+  <div class="cover-tag">기획서 v1.0 · 2026.03</div>
+  <h1>스마트 수목 관리<br><span>대시보드 플랫폼</span></h1>
+  <div class="sub">세이브트리 × 두꺼비세상 / Greehill STI API 연동 수목 데이터 시각화 시스템</div>
+  <div class="cover-meta">
+    <div class="cm">작성: <span>두꺼비세상 AX팀</span></div>
+    <div class="cm">클라이언트: <span>세이브트리&엑스퍼트</span></div>
+    <div class="cm">버전: <span>v1.0 초안</span></div>
+  </div>
+  <div class="cover-kpi">
+    <div class="ck"><div class="cv">4개</div><div class="cc">핵심 화면</div></div>
+    <div class="ck"><div class="cv">3-Tier</div><div class="cc">시스템 구조</div></div>
+    <div class="ck"><div class="cv">2개</div><div class="cc">외부 API 연동</div></div>
+    <div class="ck"><div class="cv">3개월</div><div class="cc">1차 개발 목표</div></div>
+  </div>
+</div>
+
+<!-- Section 01 -->
+<section>
+<div class="sec-hdr"><div class="sec-num">Section 01</div><div class="sec-name">프로젝트 개요 및 배경</div></div>
+
+<p class="lead">
+  세이브트리&엑스퍼트는 <strong>LiDAR + AI 기반 수목 3D 맵핑</strong>과 <strong>IoT 실시간 모니터링</strong>을 결합해
+  도심 내 나무를 디지털 자산으로 전환하는 스마트 조경 솔루션 기업이다.
+  두꺼비세상·아파트너는 이 서비스의 아파트 단지 확장 파트너로,
+  <strong>입주민·관리자용 수목 관리 대시보드 플랫폼</strong>을 공동 개발하는 것이 본 프로젝트의 목표다.
+</p>
+
+<div class="ibox">
+  세이브트리 하용훈 대표 공개 발언 (2024.11): <strong>"greehill, 두꺼비세상, 아파트너와의 협력을 통해
+  기술적 시너지를 극대화하고 글로벌 조경관리 딥테크 기업으로 성장할 것"</strong>
+  — 이미 공식 파트너 관계로 확인됨.
+</div>
+
+<div class="card-row col3">
+  <div class="card">
+    <div class="ctag">Core Tech</div>
+    <h4>Greehill STI</h4>
+    <p>체코 기반 딥테크. 차량 탑재 LiDAR로 수천 그루를 수일 만에 3D 맵핑. 수목별 수고·DBH·수관 면적·건강 등급 자동 산출.</p>
+  </div>
+  <div class="card">
+    <div class="ctag">IoT Layer</div>
+    <h4>세이브트리 센서</h4>
+    <p>수목당 토양수분·온도·전기전도도(EC)·생체전기 센서 탑재. LaaS(LiDAR as a Service) 모델로 실시간 데이터 수집.</p>
+  </div>
+  <div class="card">
+    <div class="ctag">Our Role</div>
+    <h4>대시보드 플랫폼</h4>
+    <p>Greehill API + 세이브트리 센서 API를 통합해 관리자·입주민 대상 수목 현황 시각화 및 운영 도구 제공.</p>
+  </div>
+</div>
+
+<table class="tbl">
+  <thead><tr><th>구분</th><th>역할</th><th>제공 데이터</th><th>비고</th></tr></thead>
+  <tbody>
+    <tr><td>Greehill</td><td>LiDAR 스캔 + AI 분류</td><td>수목 위치(GPS) / 수종 / 수고 / DBH / 수관 / 건강 등급 / 포인트 클라우드 URL</td><td>STI SaaS API</td></tr>
+    <tr><td>세이브트리</td><td>IoT 센서 운영 + 나무 진단</td><td>실시간 토양수분·온도·EC / 병해충 알림 / 진단 이력</td><td>센서 API (LaaS)</td></tr>
+    <tr><td>두꺼비세상</td><td>대시보드 개발 + 단지 네트워크</td><td>단지 정보 / 입주민 계정 / 알림 채널</td><td>아파트너 연계</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- Section 02 -->
+<section>
+<div class="sec-hdr"><div class="sec-num">Section 02</div><div class="sec-name">시스템 아키텍처</div></div>
+
+<p class="body">
+  본 시스템은 <strong>3-Tier 구조</strong>로 설계된다.
+  데이터 레이어(Greehill + 세이브트리 IoT), 백엔드 API 레이어(우리가 개발), 프론트엔드 레이어(대시보드)로 나뉜다.
+  포인트 클라우드 3D 뷰어는 Greehill 자체 플랫폼으로 연동(아웃바운드 링크)하며 직접 개발하지 않는다.
+</p>
+
+<div class="arch">
+  <!-- Row 1: 데이터 수집 -->
+  <div style="text-align:center;font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:10px;">데이터 수집</div>
+  <div class="arch-row">
+    <div class="arch-box">
+      <div class="abt">Greehill</div>
+      <div class="abn">LiDAR 스캔</div>
+    </div>
+    <div class="arch-arrow">+</div>
+    <div class="arch-box">
+      <div class="abt">SaveTree IoT</div>
+      <div class="abn">센서 데이터</div>
+    </div>
+    <div class="arch-arrow">+</div>
+    <div class="arch-box">
+      <div class="abt">아파트너</div>
+      <div class="abn">단지 정보</div>
+    </div>
+  </div>
+  <div class="arch-row" style="justify-content:center;margin:8px 0;">
+    <div style="font-size:20px;color:var(--ink4);">↓</div>
+  </div>
+
+  <!-- Row 2: 백엔드 -->
+  <div style="text-align:center;font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:10px;">백엔드 / API Layer</div>
+  <div class="arch-row">
+    <div class="arch-box dark" style="min-width:300px;">
+      <div class="abt">Our Backend (Node.js / FastAPI)</div>
+      <div class="abn">STI 데이터 수신·캐싱 · 센서 스트리밍 · 알림 엔진 · 사용자 권한</div>
+    </div>
+  </div>
+  <div class="arch-row" style="justify-content:center;margin:8px 0;">
+    <div style="font-size:20px;color:var(--ink4);">↓</div>
+  </div>
+
+  <!-- Row 3: 프론트엔드 -->
+  <div style="text-align:center;font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:10px;">프론트엔드 대시보드</div>
+  <div class="arch-row">
+    <div class="arch-box">
+      <div class="abt">화면 01</div>
+      <div class="abn">메인 대시보드</div>
+    </div>
+    <div class="arch-arrow">·</div>
+    <div class="arch-box">
+      <div class="abt">화면 02</div>
+      <div class="abn">트리맵</div>
+    </div>
+    <div class="arch-arrow">·</div>
+    <div class="arch-box">
+      <div class="abt">화면 03</div>
+      <div class="abn">수목 상세·센서</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-box" style="background:#fef3c7;border-color:#fde68a;">
+      <div class="abt" style="color:#92400e;">Greehill 연동</div>
+      <div class="abn" style="color:#78350f;">포인트 클라우드</div>
+    </div>
+  </div>
+</div>
+
+<div class="ibox">
+  <strong>포인트 클라우드 처리 방침:</strong> Greehill은 수목 스캔 데이터를 자체 3D 뷰어로 제공한다.
+  우리 플랫폼에서는 수목 ID 파라미터를 URL에 담아 Greehill 뷰어로 리디렉트하는 방식을 채택한다.
+  <span class="em">직접 개발 불필요 → 3D 엔진 개발 비용 절감, Greehill 데이터 최신성 보장.</span>
+</div>
+</section>
+
+<!-- Section 03 -->
+<section>
+<div class="sec-hdr"><div class="sec-num">Section 03</div><div class="sec-name">화면 구성 및 IA</div></div>
+
+<p class="body">대시보드는 총 <strong>4개 핵심 화면</strong>으로 구성된다. 좌측 네비게이션(수직 사이드바) 기반이며 모바일 반응형을 지원한다.</p>
+
+<div class="screen-grid">
+  <div class="sc">
+    <div class="sc-hd"><div class="sn">1</div><div class="st">메인 대시보드</div></div>
+    <div class="sc-body">
+      <p>현재 단지 전체 수목 현황 요약. 관리자의 일일 시작 화면.</p>
+      <div class="feat">총 수목 수 / 건강 등급 분포 (원형 차트)</div>
+      <div class="feat">긴급 알림 수목 (센서 임계값 초과)</div>
+      <div class="feat">이번 달 점검 예정 수목 일정</div>
+      <div class="feat">탄소 흡수량·미세먼지 저감 ESG 수치</div>
+      <div class="feat">최근 진단 이력 피드</div>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="sc-hd"><div class="sn">2</div><div class="st">트리맵 (인터랙티브)</div></div>
+    <div class="sc-body">
+      <p>단지 도면 위에 수목 위치를 오버레이. 클릭·드래그·필터 지원.</p>
+      <div class="feat">수목 마커 (건강 등급별 색상 코딩)</div>
+      <div class="feat">드래그 앤 드롭으로 수목 위치 재배치</div>
+      <div class="feat">클러스터 뷰 → 줌인 시 개별 마커 전환</div>
+      <div class="feat">필터: 수종 / 건강 / 센서 알림 여부</div>
+      <div class="feat">마커 클릭 시 미니 팝업 → 상세 페이지 이동</div>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="sc-hd"><div class="sn">3</div><div class="st">수목 상세 · 센서 데이터</div></div>
+    <div class="sc-body">
+      <p>개별 수목의 전체 정보 + 실시간/히스토리 센서 데이터.</p>
+      <div class="feat">Greehill STI 속성 (수종·수고·DBH·수관·좌표)</div>
+      <div class="feat">센서 현황 카드 (수분·온도·EC·생체전기)</div>
+      <div class="feat">7일/30일 트렌드 라인 차트</div>
+      <div class="feat">건강 등급 히스토리</div>
+      <div class="feat">"포인트 클라우드 보기" → Greehill 연동 버튼</div>
+      <div class="feat">진단 기록(EMR) 타임라인</div>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="sc-hd"><div class="sn">4</div><div class="st">포인트 클라우드 연동</div></div>
+    <div class="sc-body">
+      <p>Greehill 3D 뷰어 연동 화면. 직접 개발 없이 iframe 또는 아웃바운드 링크 방식.</p>
+      <div class="feat">수목 ID → Greehill URL 파라미터 변환</div>
+      <div class="feat">iframe 임베드 (Same-Origin 허용 시)</div>
+      <div class="feat">우리 UI로 감싼 헤더·툴바 오버레이</div>
+      <div class="feat">수목 기본 정보 사이드 패널 (Greehill 뷰 옆)</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Section 04 -->
+<section>
+<div class="sec-hdr"><div class="sec-num">Section 04</div><div class="sec-name">핵심 기능 상세 명세</div></div>
+
+<p class="body"><strong>트리맵 드래그 앤 드롭</strong> — 사용자가 실제 도면과 GPS 좌표가 미세하게 다를 때 보정할 수 있도록 UI 단에서 위치를 재배치하는 기능이다. 재배치된 좌표는 로컬 오버라이드 DB에 저장되고, Greehill 원본 좌표는 유지된다.</p>
+
+<table class="tbl">
+  <thead><tr><th>기능</th><th>설명</th><th>데이터 소스</th><th>우선순위</th></tr></thead>
+  <tbody>
+    <tr><td>수목 위치 맵</td><td>단지 배경 도면(SVG/PNG)에 수목 좌표 오버레이. GPS 기반 상대 좌표 변환</td><td>Greehill STI API</td><td><span class="badge g">P0</span></td></tr>
+    <tr><td>드래그 리포지션</td><td>마커 드래그 → 로컬 DB 오버라이드 저장. "원위치 초기화" 버튼 제공</td><td>로컬 DB</td><td><span class="badge g">P0</span></td></tr>
+    <tr><td>건강 등급 컬러 코딩</td><td>Excellent(녹)/Good(연두)/Fair(주황)/Poor(적) 마커 색상 자동 적용</td><td>Greehill STI</td><td><span class="badge g">P0</span></td></tr>
+    <tr><td>실시간 센서 대시보드</td><td>토양수분·온도·EC·생체전기 수치 실시간 표시. 임계값 초과 시 빨간 알림</td><td>세이브트리 IoT API</td><td><span class="badge g">P0</span></td></tr>
+    <tr><td>센서 히스토리 차트</td><td>7일/30일 라인 차트. 강수 이벤트 오버레이 옵션</td><td>세이브트리 IoT API</td><td><span class="badge b">P1</span></td></tr>
+    <tr><td>포인트 클라우드 연동</td><td>Greehill 3D 뷰어 URL → iframe / 새 탭 분기. 수목 ID 파라미터 전달</td><td>Greehill URL scheme</td><td><span class="badge g">P0</span></td></tr>
+    <tr><td>ESG 수치 패널</td><td>수목별 CO₂ 흡수량·미세먼지 저감량 화폐 가치 환산 표시</td><td>Greehill STI (환경가치 모듈)</td><td><span class="badge b">P1</span></td></tr>
+    <tr><td>진단 EMR 타임라인</td><td>세이브트리 나무의사 진단 이력 시계열 조회. PDF 리포트 다운로드</td><td>세이브트리 EMR API</td><td><span class="badge b">P1</span></td></tr>
+    <tr><td>알림 센터</td><td>센서 이상·점검 예정·진단 결과를 앱 내 알림 + Telegram/카카오 푸시 연동</td><td>내부 알림 서버</td><td><span class="badge o">P2</span></td></tr>
+    <tr><td>수종 필터 + 검색</td><td>수종명 / 위치 / 건강 등급 복합 필터. 맵·리스트 뷰 전환</td><td>Greehill STI</td><td><span class="badge b">P1</span></td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- Section 05 -->
+<section>
+<div class="sec-hdr"><div class="sec-num">Section 05</div><div class="sec-name">데이터 모델</div></div>
+
+<p class="body">핵심 엔티티는 <strong>단지(Site) → 수목(Tree) → 센서 읽기(SensorReading)</strong> 계층이다.</p>
+
+<table class="tbl">
+  <thead><tr><th>엔티티</th><th>주요 필드</th><th>출처</th></tr></thead>
+  <tbody>
+    <tr><td>Site (단지)</td><td>site_id, name, address, floor_plan_url, bounds (lat/lon)</td><td>아파트너 DB</td></tr>
+    <tr><td>Tree (수목)</td><td>tree_id, site_id, species, height_m, dbh_cm, canopy_m², health_grade, greehill_id, lat, lon, lat_override, lon_override</td><td>Greehill STI API</td></tr>
+    <tr><td>SensorDevice (센서)</td><td>device_id, tree_id, type (soil/temp/ec/bio), installed_at</td><td>세이브트리 IoT</td></tr>
+    <tr><td>SensorReading (수치)</td><td>reading_id, device_id, value, unit, timestamp, alert_flag</td><td>세이브트리 IoT Stream</td></tr>
+    <tr><td>Diagnosis (진단)</td><td>diag_id, tree_id, inspector, result, treatment, photos[], created_at</td><td>세이브트리 EMR API</td></tr>
+    <tr><td>AlertRule (알림 규칙)</td><td>rule_id, tree_id, sensor_type, min, max, notify_channel</td><td>로컬 설정</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- Section 06 -->
+<section>
+<div class="sec-hdr"><div class="sec-num">Section 06</div><div class="sec-name">Greehill API 연동 방안</div></div>
+
+<p class="body">
+  Greehill은 <strong>RESTful API</strong>를 통해 STI 데이터를 제공한다.
+  세이브트리가 Greehill의 한국 독점 파트너이므로, API 키 및 엔드포인트 접근은 세이브트리를 통해 확보한다.
+  내일 Greehill 화면 검토 후 실제 API 필드명과 포인트 클라우드 URL 스킴을 확인해야 한다.
+</p>
+
+<div class="card-row">
+  <div class="card">
+    <div class="ctag">Greehill STI API — 예상 엔드포인트</div>
+    <ul>
+      <li>GET /sites/:id/trees — 단지 내 전체 수목 목록</li>
+      <li>GET /trees/:id — 개별 수목 속성 상세</li>
+      <li>GET /trees/:id/pointcloud — 3D 뷰어 URL 반환</li>
+      <li>GET /trees/:id/metrics — ESG 수치 (CO₂, 미세먼지)</li>
+      <li>Webhook: 건강 등급 변경 이벤트</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="ctag">세이브트리 IoT API — 예상 엔드포인트</div>
+    <ul>
+      <li>GET /devices?tree_id=:id — 수목 연결 센서 목록</li>
+      <li>GET /readings/latest?device_id=:id — 최신 수치</li>
+      <li>GET /readings/history — 기간별 히스토리</li>
+      <li>WebSocket /stream — 실시간 센서 스트림</li>
+      <li>GET /alerts/active — 현재 활성 알림 목록</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ibox">
+  <strong>내일 Greehill 화면 검토 체크리스트:</strong>
+  ① 수목별 ID/속성 필드명 확인 ② 포인트 클라우드 URL 패턴 확인 ③ 센서 데이터 항목 (토양수분·온도·EC 외 추가 항목 여부) ④ 건강 등급 기준 (A~E 또는 숫자 스케일) ⑤ ESG 수치 제공 여부 및 단위 ⑥ API 인증 방식 (API Key / OAuth2)
+</div>
+</section>
+
+<!-- Section 07 -->
+<section>
+<div class="sec-hdr"><div class="sec-num">Section 07</div><div class="sec-name">개발 로드맵</div></div>
+
+<div class="roadmap">
+  <div class="rm-item">
+    <div class="rm-l">
+      <div class="rm-dot g">1</div>
+      <div class="rm-line"></div>
+    </div>
+    <div class="rm-c">
+      <span class="tag g">Phase 1 · 1~4주차</span>
+      <h4>기반 설계 + API 연동 확인</h4>
+      <ul>
+        <li>Greehill API 스펙 문서 수령 (세이브트리 통해 접수)</li>
+        <li>세이브트리 IoT API 스펙 확인 및 테스트 계정 발급</li>
+        <li>백엔드 API 서버 기초 구조 설계 (Node.js / Supabase)</li>
+        <li>도면 이미지 + 좌표 매핑 방식 확정</li>
+      </ul>
+    </div>
+  </div>
+  <div class="rm-item">
+    <div class="rm-l">
+      <div class="rm-dot g">2</div>
+      <div class="rm-line"></div>
+    </div>
+    <div class="rm-c">
+      <span class="tag g">Phase 2 · 5~8주차</span>
+      <h4>핵심 화면 P0 개발 (트리맵 + 센서)</h4>
+      <ul>
+        <li>트리맵 UI 개발 — 도면 오버레이 + 마커 클러스터 + 드래그 앤 드롭</li>
+        <li>수목 상세 화면 — STI 속성 + 센서 현황 카드</li>
+        <li>포인트 클라우드 Greehill 연동 (URL 파라미터 방식)</li>
+        <li>메인 대시보드 KPI 카드 + 알림 목록</li>
+      </ul>
+    </div>
+  </div>
+  <div class="rm-item">
+    <div class="rm-l">
+      <div class="rm-dot y">3</div>
+      <div class="rm-line"></div>
+    </div>
+    <div class="rm-c">
+      <span class="tag y">Phase 3 · 9~10주차</span>
+      <h4>P1 기능 추가 + 파일럿 단지 실사용 테스트</h4>
+      <ul>
+        <li>센서 히스토리 7일/30일 차트 (Chart.js)</li>
+        <li>ESG 수치 패널 (CO₂·미세먼지 환산)</li>
+        <li>진단 EMR 타임라인</li>
+        <li>파일럿 단지 1개소 실제 데이터 연동 테스트</li>
+      </ul>
+    </div>
+  </div>
+  <div class="rm-item">
+    <div class="rm-l">
+      <div class="rm-dot b">4</div>
+    </div>
+    <div class="rm-c">
+      <span class="tag b">Phase 4 · 11~12주차</span>
+      <h4>P2 기능 + QA + 배포</h4>
+      <ul>
+        <li>Telegram/카카오 알림 연동</li>
+        <li>모바일 반응형 최적화</li>
+        <li>성능 테스트 + 보안 리뷰</li>
+        <li>1차 정식 릴리즈</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Section 08 -->
+<section>
+<div class="sec-hdr"><div class="sec-num">Section 08</div><div class="sec-name">기대 효과 및 비즈니스 모델</div></div>
+
+<div class="card-row">
+  <div class="card">
+    <div class="ctag">세이브트리 관점</div>
+    <h4>플랫폼 경쟁력 강화</h4>
+    <p>단순 진단 서비스 → 실시간 데이터 대시보드 SaaS로 업셀링. 아파트너 단지 네트워크(+200개) 즉시 확보.</p>
+  </div>
+  <div class="card">
+    <div class="ctag">두꺼비세상 관점</div>
+    <h4>아파트너 신규 수익원</h4>
+    <p>단지당 수목 관리 SaaS 구독료 수익. 입주민 편의 서비스 확장 → 단지 계약 유지율 제고.</p>
+  </div>
+  <div class="card">
+    <div class="ctag">관리자/입주민 관점</div>
+    <h4>수목 투명성 확보</h4>
+    <p>나무 한 그루의 건강·위치·가치를 앱에서 확인. ESG 자산화 리포트로 건설사 하자 리스크 저감.</p>
+  </div>
+</div>
+
+<table class="tbl">
+  <thead><tr><th>수익 모델</th><th>단가 (예시)</th><th>비고</th></tr></thead>
+  <tbody>
+    <tr><td>단지별 SaaS 구독</td><td>월 30~80만원 / 단지</td><td>수목 수·센서 수에 따라 차등</td></tr>
+    <tr><td>초기 스캔 비용 (Greehill)</td><td>수목당 3~5만원 (추정)</td><td>세이브트리가 Greehill 수수료 포함 패키지화</td></tr>
+    <tr><td>IoT 센서 설치</td><td>센서당 20~40만원 (하드웨어)</td><td>세이브트리 하드웨어 마진</td></tr>
+    <tr><td>진단 서비스 연계</td><td>건당 5~15만원</td><td>세이브트리 나무의사 방문 서비스</td></tr>
+  </tbody>
+</table>
+
+<p class="body" style="margin-top:8px;font-size:12px;color:var(--ink3);">
+  ※ 본 기획서는 2026.03.12 현재 가용한 공개 정보 및 파트너 협의 내용 기반 초안이며, 내일 Greehill 화면 검토 후 API 명세 및 기능 상세 업데이트 예정입니다.
+</p>
+</section>
+
+</div>
+</body>
+</html>
